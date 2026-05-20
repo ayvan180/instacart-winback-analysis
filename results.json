@@ -1,0 +1,79 @@
+{
+  "dataset": {
+    "n_orders": 3421083,
+    "n_users": 206209,
+    "max_observed_gap_days": 30,
+    "censored_at": "30 days (Instacart caps reported gap)"
+  },
+  "elbow_analysis": {
+    "candidates_within_0.1pp": [
+      {
+        "gap_threshold": 14,
+        "drop_rate": 1.72,
+        "delta_drop": 0.6599999999999999
+      },
+      {
+        "gap_threshold": 28,
+        "drop_rate": 2.22,
+        "delta_drop": 0.6500000000000001
+      },
+      {
+        "gap_threshold": 21,
+        "drop_rate": 2.09,
+        "delta_drop": 0.5799999999999998
+      },
+      {
+        "gap_threshold": 7,
+        "drop_rate": 0.58,
+        "delta_drop": 0.31999999999999995
+      },
+      {
+        "gap_threshold": 20,
+        "drop_rate": 1.51,
+        "delta_drop": 0.28
+      }
+    ],
+    "selected_threshold": 14,
+    "selection_rationale": "First gap where drop rate exceeds 1% AND continuation rate falls below 99%",
+    "limitation": "No single dominant inflection in observable range; multiple candidate thresholds cluster between days 14-28"
+  },
+  "trigger_population_day_14": {
+    "users_reaching_threshold": 193954,
+    "pct_of_base": 94.06,
+    "estimated_churn_by_day_30_pct": 21.6
+  },
+  "segmentation": [
+    {
+      "segment": "1_light (\u22645 orders)",
+      "users": 43576,
+      "pct_gap_14_plus": 91.7,
+      "pct_gap_21_plus": 83.6,
+      "pct_gap_30": 74.1
+    },
+    {
+      "segment": "2_medium (6-20 orders)",
+      "users": 111902,
+      "pct_gap_14_plus": 95.2,
+      "pct_gap_21_plus": 88.8,
+      "pct_gap_30": 80.5
+    },
+    {
+      "segment": "3_heavy (21+ orders)",
+      "users": 50731,
+      "pct_gap_14_plus": 93.6,
+      "pct_gap_21_plus": 79.7,
+      "pct_gap_30": 58.4
+    }
+  ],
+  "methodology_limitations": [
+    "Right-censored at 30 days: cannot distinguish 30-day pauses from permanent churn",
+    "Max-gap-per-user conflates loyal pauses with true abandonment",
+    "No absolute timestamps prevent proper Kaplan-Meier survival analysis",
+    "Dataset is single grocery vertical (US Instacart 2017); generalization to other quick-commerce categories untested"
+  ],
+  "recommended_next_steps": [
+    "A/B test day-7, day-14, day-21 trigger thresholds in production",
+    "Re-run with absolute timestamps and proper survival framework (lifelines / scikit-survival)",
+    "Segment trigger threshold by user tenure (light vs. heavy users likely need different thresholds)"
+  ]
+}
